@@ -26,21 +26,54 @@ if "messages" not in st.session_state:
 # --- Sidebar: Data Ingestion & Settings ---
 with st.sidebar:
     st.title("⚙️ Control Panel")
-    st.markdown("Place `.txt` files in the `/data` folder, then index them below.")
     
-    if st.button("🔄 Run Data Ingestion"):
+    # ── File Uploader ──────────────────────────────────────
+    st.subheader("📄 Upload Documents")
+    uploaded_files = st.file_uploader(
+        "Upload `.txt` files to index",
+        type=["txt"],
+        accept_multiple_files=True,
+        help="You can upload multiple .txt files at once."
+    )
+    
+    if uploaded_files:
+        os.makedirs("data", exist_ok=True)
+        saved = []
+        for f in uploaded_files:
+            save_path = os.path.join("data", f.name)
+            with open(save_path, "wb") as out:
+                out.write(f.read())
+            saved.append(f.name)
+        st.success(f"✅ Saved {len(saved)} file(s): {', '.join(saved)}")
+        st.info("Click **'Build Index'** below to make them searchable.")
+
+    st.markdown("---")
+    
+    # ── Index Builder ──────────────────────────────────────
+    st.subheader("🔍 Knowledge Index")
+    if st.button("⚡ Build / Rebuild Index", use_container_width=True):
         with st.spinner("Building FAISS & BM25 Indexes..."):
             pipeline = IngestionPipeline()
             try:
                 pipeline.ingest_documents("data")
-                st.success("✅ Indexes built successfully!")
-                # Force orchestrator to reload indexes
+                st.success("✅ Index built successfully!")
+                # Force orchestrator to reload fresh indexes
                 st.session_state.orchestrator = RAGOrchestrator()
+                st.session_state.messages = []  # clear chat for fresh session
             except Exception as e:
                 st.error(f"Ingestion failed: {e}")
+    
+    # Show list of currently indexed documents
+    data_dir = "data"
+    if os.path.exists(data_dir):
+        txt_files = [f for f in os.listdir(data_dir) if f.endswith(".txt")]
+        if txt_files:
+            st.markdown("**📁 Documents in index:**")
+            for fname in txt_files:
+                st.markdown(f"- `{fname}`")
                 
     st.markdown("---")
-    st.markdown("**Architecture Stack:**\n- UI: Streamlit (Streaming)\n- Memory: Query Decontextualization\n- LLM: Groq (Llama 3.1)\n- Embeddings: HuggingFace\n- Store: FAISS + BM25\n- Reranker: Cross-Encoder")
+    st.markdown("**Stack:** Groq · FAISS · BM25 · Cross-Encoder · Streamlit")
 
 # --- Tabs ---
 tab1, tab2 = st.tabs(["💬 Copilot Chat", "📊 Admin Dashboard"])
