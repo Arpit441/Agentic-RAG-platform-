@@ -16,3 +16,5 @@ langchain-community
 langchain-groq
 langchain-huggingface
 tiktoken
+pymupdf
+pandas

@@ -30,10 +30,10 @@ with st.sidebar:
     # ── File Uploader ──────────────────────────────────────
     st.subheader("📄 Upload Documents")
     uploaded_files = st.file_uploader(
-        "Upload `.txt` files to index",
-        type=["txt"],
+        "Upload `.txt` or `.pdf` files to index",
+        type=["txt", "pdf"],
         accept_multiple_files=True,
-        help="You can upload multiple .txt files at once."
+        help="Upload multiple files at once. PDFs must have embedded text (not scanned images)."
     )
     
     if uploaded_files:
@@ -57,20 +57,20 @@ with st.sidebar:
             try:
                 pipeline.ingest_documents("data")
                 st.success("✅ Index built successfully!")
-                # Force orchestrator to reload fresh indexes
                 st.session_state.orchestrator = RAGOrchestrator()
-                st.session_state.messages = []  # clear chat for fresh session
+                st.session_state.messages = []
             except Exception as e:
                 st.error(f"Ingestion failed: {e}")
     
     # Show list of currently indexed documents
     data_dir = "data"
     if os.path.exists(data_dir):
-        txt_files = [f for f in os.listdir(data_dir) if f.endswith(".txt")]
-        if txt_files:
+        all_docs = [f for f in os.listdir(data_dir) if f.endswith((".txt", ".pdf"))]
+        if all_docs:
             st.markdown("**📁 Documents in index:**")
-            for fname in txt_files:
-                st.markdown(f"- `{fname}`")
+            for fname in all_docs:
+                icon = "📄" if fname.endswith(".pdf") else "📝"
+                st.markdown(f"- {icon} `{fname}`")
                 
     st.markdown("---")
     st.markdown("**Stack:** Groq · FAISS · BM25 · Cross-Encoder · Streamlit")

@@ -30,9 +30,9 @@ class IngestionPipeline:
         self.embeddings = HuggingFaceEmbeddings(model_name=embedding_model_name)
         
     def _read_text_files(self, folder_path: str) -> Dict[str, str]:
+        """Read all .txt files recursively from a given folder."""
         documents = {}
         path = Path(folder_path)
-        
         for file_path in path.rglob("*.txt"):
             try:
                 with open(file_path, "r", encoding="utf-8") as f:
@@ -40,12 +40,44 @@ class IngestionPipeline:
                     documents[doc_id] = f.read()
             except Exception as e:
                 logger.error(f"Error reading {file_path}: {e}")
-                
         return documents
 
+    def _read_pdf_files(self, folder_path: str) -> Dict[str, str]:
+        """Read all .pdf files recursively using PyMuPDF (embedded text only, no OCR)."""
+        documents = {}
+        path = Path(folder_path)
+        try:
+            import fitz  # pymupdf
+        except ImportError:
+            logger.warning("pymupdf not installed. Skipping PDF files. Run: pip install pymupdf")
+            return documents
+
+        for file_path in path.rglob("*.pdf"):
+            try:
+                doc = fitz.open(str(file_path))
+                full_text = ""
+                for page in doc:
+                    full_text += page.get_text()
+                doc.close()
+                if full_text.strip():
+                    doc_id = str(file_path.relative_to(path))
+                    documents[doc_id] = full_text
+                    logger.info(f"Extracted {len(full_text)} chars from PDF: {file_path.name}")
+                else:
+                    logger.warning(f"No text extracted from {file_path.name} — may be a scanned PDF.")
+            except Exception as e:
+                logger.error(f"Error reading PDF {file_path}: {e}")
+        return documents
+
+
     def ingest_documents(self, folder_path: str):
+        # Read both .txt and .pdf files
         documents = self._read_text_files(folder_path)
+        pdf_docs = self._read_pdf_files(folder_path)
+        documents.update(pdf_docs)  # merge together
+
         if not documents:
+            print("No .txt or .pdf files found in the folder.")
             return
             
         all_chunks = []
