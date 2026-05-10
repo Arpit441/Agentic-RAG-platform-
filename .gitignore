@@ -1,0 +1,94 @@
+# ─────────────────────────────────────────────
+# Python
+# ─────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyo
+*.pyd
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+*.whl
+
+# Virtual Environments
+venv/
+.venv/
+env/
+ENV/
+
+# ─────────────────────────────────────────────
+# Environment & Secrets (NEVER commit these)
+# ─────────────────────────────────────────────
+.env
+.env.*
+*.env
+secrets.json
+
+# ─────────────────────────────────────────────
+# Auto-generated Storage (Large Binary Files)
+# ─────────────────────────────────────────────
+storage/
+# If you want to commit data/ sample files, remove the line below
+# data/
+
+# ─────────────────────────────────────────────
+# ML Model Cache
+# ─────────────────────────────────────────────
+# HuggingFace / SentenceTransformers cache
+.cache/
+models/
+*.bin
+*.safetensors
+*.onnx
+*.pt
+*.pth
+
+# ─────────────────────────────────────────────
+# IDE & Editor Files
+# ─────────────────────────────────────────────
+.vscode/
+.idea/
+*.suo
+*.user
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# ─────────────────────────────────────────────
+# Jupyter Notebooks
+# ─────────────────────────────────────────────
+.ipynb_checkpoints/
+*.ipynb
+
+# ─────────────────────────────────────────────
+# Logs & Telemetry
+# ─────────────────────────────────────────────
+*.log
+logs/
+*.db
+*.sqlite
+*.sqlite3
+
+# ─────────────────────────────────────────────
+# Streamlit
+# ─────────────────────────────────────────────
+.streamlit/secrets.toml
+
+# ─────────────────────────────────────────────
+# Testing & Coverage
+# ─────────────────────────────────────────────
+.pytest_cache/
+.coverage
+htmlcov/
+coverage.xml
+
+# ─────────────────────────────────────────────
+# Distribution / Packaging
+# ─────────────────────────────────────────────
+*.manifest
+*.spec

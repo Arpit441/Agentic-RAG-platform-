@@ -1,0 +1,10 @@
+GlobalTech Solutions - IT Security & Data Handling Policy
+
+1. Password Requirements: All employee passwords must be at least 14 characters long, contain a mix of uppercase, lowercase, numbers, and special characters, and must be rotated every 90 days.
+2. Two-Factor Authentication (2FA): 2FA is mandatory for all internal systems, including email, GitHub, and the HR Portal. Duo Mobile is the approved authenticator app.
+3. VPN Usage: When connecting to company resources from any public Wi-Fi network (cafes, airports), employees MUST use the corporate Cisco AnyConnect VPN.
+4. Data Classification:
+   - Public: Marketing materials, public website content. Can be shared freely.
+   - Internal: Employee directories, standard operating procedures. Do not share outside the company.
+   - Confidential: Financial records, unreleased product roadmaps, and customer PII (Personally Identifiable Information). Requires NDA and encrypted transfer.
+5. Incident Reporting: If an employee loses a company laptop or suspects a phishing attack, they must immediately call the 24/7 IT Hotline at 1-800-555-0199 or email security-incident@globaltech.com.
